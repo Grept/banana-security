@@ -6,7 +6,7 @@ import {AuthContext} from "./AuthContext";
 function NavBar() {
     const history = useHistory();
 
-    const {auth, logoutFunction} = useContext(AuthContext);
+    const {auth, logoutFunction, user} = useContext(AuthContext);
     // console.log(auth);
 
     return (
@@ -19,6 +19,8 @@ function NavBar() {
                     </h3>
                 </span>
             </Link>
+
+            {user !== undefined && <h3>{user}</h3>}
 
             {!auth
                 ?

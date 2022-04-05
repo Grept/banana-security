@@ -7,7 +7,8 @@ function SignIn() {
     const {loginFunction} = useContext(AuthContext);
 
     function handleSubmit(e) {
-        loginFunction();
+        // console.log(e.target[0].value);
+        loginFunction(e.target[0].value);
         e.preventDefault()
     }
 
@@ -18,7 +19,8 @@ function SignIn() {
                 molestias qui quo unde?</p>
 
             <form onSubmit={handleSubmit}>
-                <p>*invoervelden*</p>
+                <input type="email"/>
+                <input type="password"/>
                 <button type="submit">Inloggen</button>
             </form>
 

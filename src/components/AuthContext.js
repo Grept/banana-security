@@ -6,22 +6,25 @@ export const AuthContext = createContext({});
 function AuthContextProvider({children}) {
 
     const history = useHistory();
-    const [isAuth, toggleIsAuth] = useState(false);
 
-    function logIn() {
-        toggleIsAuth(true);
+    const [userAuth, setUserAuth] = useState({isAuth: false, user: ""})
+
+
+    function logIn(userEmail) {
+        setUserAuth({isAuth: true, user: userEmail});
         console.log("Gebruiker is ingelogd");
         history.push("/profile");
     }
 
     function logOut() {
-        toggleIsAuth(false);
+        setUserAuth({isAuth: false, user: ""})
         console.log("Gebruiker is uitgelogd");
         history.push("/");
     }
 
     const data = {
-        auth: isAuth,
+        auth: userAuth.isAuth,
+        user: userAuth.user,
         loginFunction: logIn,
         logoutFunction: logOut,
         myNumber: 6,
