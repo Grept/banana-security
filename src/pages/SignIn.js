@@ -7,7 +7,6 @@ function SignIn() {
     const {loginFunction} = useContext(AuthContext);
 
     function handleSubmit(e) {
-        // console.log(e.target[0].value);
         loginFunction(e.target[0].value);
         e.preventDefault()
     }

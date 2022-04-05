@@ -7,7 +7,6 @@ function NavBar() {
     const history = useHistory();
 
     const {auth, logoutFunction, user} = useContext(AuthContext);
-    // console.log(auth);
 
     return (
         <nav>
