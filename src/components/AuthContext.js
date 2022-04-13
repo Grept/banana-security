@@ -1,5 +1,6 @@
 import React, {createContext, useState} from "react";
 import {useHistory} from "react-router-dom";
+import jwtDecode from "jwt-decode";
 
 export const AuthContext = createContext({});
 
@@ -10,8 +11,13 @@ function AuthContextProvider({children}) {
     const [userAuth, setUserAuth] = useState({isAuth: false, user: ""})
 
 
-    function logIn(userEmail) {
-        setUserAuth({isAuth: true, user: userEmail});
+    function logIn(jwtToken) {
+        localStorage.setItem("token", jwtToken);
+        const {sub: userId} = jwtDecode(jwtToken);
+
+        const response =
+
+        setUserAuth({isAuth: true, user: ""});
         console.log("Gebruiker is ingelogd");
         history.push("/profile");
     }
