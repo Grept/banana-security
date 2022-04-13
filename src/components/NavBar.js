@@ -19,7 +19,7 @@ function NavBar() {
                 </span>
             </Link>
 
-            {user !== undefined && <h3>{user}</h3>}
+            {user !== null && <h3>{user.username} / {user.email}</h3>}
 
             {!auth
                 ?

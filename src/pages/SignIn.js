@@ -22,10 +22,6 @@ function SignIn() {
         } catch (e) {
             console.error(e);
         }
-
-
-        // loginFunction(data.target[0].value);
-        // data.preventDefault()
     }
 
     return (
