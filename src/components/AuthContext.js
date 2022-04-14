@@ -1,4 +1,4 @@
-import React, {createContext, useState} from "react";
+import React, {createContext, useState, useEffect} from "react";
 import {useHistory} from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import axios from "axios";
@@ -6,18 +6,41 @@ import axios from "axios";
 export const AuthContext = createContext({});
 
 function AuthContextProvider({children}) {
-
-    const history = useHistory();
+    /*
+    * Voeg extra key "status" toe aan de state. Deze staat standaard op "pending"
+    * */
 
     const [userAuth, setUserAuth] = useState({
         isAuth: false,
         user: null,
+        status: "pending"
     })
 
 
-    async function logIn(jwtToken) {
-        localStorage.setItem("token", jwtToken);
-        const {sub: userId} = jwtDecode(jwtToken);
+    /*
+    * useEffect(() => {}, [])
+    * is er een token aanwezig in de localStorage?
+    * JA? haal de gebruikersdata opnieuw op en zet in de state. Zet status op "done"
+    *
+    * NEE? Zet status op "done"
+    * */
+    useEffect(() => { // Check of er al een token in local staat
+        const token = localStorage.getItem("token");
+
+        if (token) {
+            getUserData()
+        } else {
+            setUserAuth({
+                ...userAuth,
+                status: "done",
+            });
+        }
+    }, [])
+
+    const history = useHistory();
+
+    async function getUserData() {
+        const {sub: userId} = jwtDecode(localStorage.getItem("token"));
 
         try {
             const {data: userDetails} = await axios.get(`http://localhost:3000/600/users/${userId}`, {
@@ -28,24 +51,37 @@ function AuthContextProvider({children}) {
             })
 
             setUserAuth({
+                ...userAuth,
                 isAuth: true,
                 user: {
                     username: userDetails.username,
                     email: userDetails.email,
                     id: userDetails.id,
                 },
+                status: "done"
             });
+
             console.log("Gebruiker is ingelogd");
             history.push("/profile");
 
         } catch (e) {
             console.log(e);
         }
+    }
 
+    function logIn(jwtToken) {
+        localStorage.setItem("token", jwtToken);
+        getUserData();
     }
 
     function logOut() {
-        setUserAuth({isAuth: false, user: null})
+        localStorage.removeItem("token");
+        setUserAuth({
+            ...userAuth,
+            isAuth: false,
+            user: null,
+            status: "done"
+        });
         console.log("Gebruiker is uitgelogd");
         history.push("/");
     }
@@ -63,7 +99,8 @@ function AuthContextProvider({children}) {
 
     return (
         <AuthContext.Provider value={data}>
-            {children}
+            {/* Check wat de status is voordat App.js geladen wordt.*/}
+            {userAuth.status === "done" ? children : <p>Loading...</p>}
         </AuthContext.Provider>
     );
 }
