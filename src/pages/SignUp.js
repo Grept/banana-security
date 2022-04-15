@@ -2,9 +2,6 @@ import React from 'react';
 import {Link, useHistory} from 'react-router-dom';
 import {useForm} from "react-hook-form";
 import axios from "axios";
-import jwtDecode from "jwt-decode";
-
-
 
 function SignUp() {
 
@@ -22,8 +19,6 @@ function SignUp() {
             console.error(e);
         }
     }
-
-
 
     return (
         <>

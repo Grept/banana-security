@@ -1,11 +1,7 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import {AuthContext} from "../components/AuthContext";
 
 function Home() {
-
-  // const data = useContext(AuthContext);
-  // console.log(data);
 
   return (
     <>

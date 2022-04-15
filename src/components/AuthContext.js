@@ -2,6 +2,7 @@ import React, {createContext, useState, useEffect} from "react";
 import {useHistory} from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import axios from "axios";
+import tokenValidator from "../helpers/TokenValidator";
 
 export const AuthContext = createContext({});
 
@@ -27,7 +28,7 @@ function AuthContextProvider({children}) {
     useEffect(() => { // Check of er al een token in local staat
         const token = localStorage.getItem("token");
 
-        if (token) {
+        if (tokenValidator(token)) {
             getUserData()
         } else {
             setUserAuth({
