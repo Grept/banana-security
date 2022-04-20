@@ -10,7 +10,7 @@ function NavBar() {
 
     return (
         <nav>
-            <Link to="/">
+            <Link exact to="/">
                 <span className="logo-container">
                     <img src={logo} alt="logo"/>
                     <h3>

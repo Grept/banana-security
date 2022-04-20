@@ -27,28 +27,37 @@ function AuthContextProvider({children}) {
     * */
     useEffect(() => { // Check of er al een token in local staat
         const token = localStorage.getItem("token");
+        const source = axios.CancelToken.source()
 
         if (tokenValidator(token)) {
-            getUserData()
+            getUserData(token, source)
         } else {
             setUserAuth({
                 ...userAuth,
                 status: "done",
             });
         }
+
+        return function cleanup() {
+            console.log("Cleaning...")
+            source.cancel();
+        }
+
     }, [])
 
     const history = useHistory();
 
-    async function getUserData() {
-        const {sub: userId} = jwtDecode(localStorage.getItem("token"));
+    async function getUserData(jwtToken, cancelToken) {
+        const {sub: userId} = jwtDecode(jwtToken);
 
         try {
             const {data: userDetails} = await axios.get(`http://localhost:3000/600/users/${userId}`, {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`
-                }
+                    Authorization: `Bearer ${jwtToken}`
+                },
+                // Asl er een canceltoken is vul hem in; vul anders null in.
+                cancelToken: cancelToken ? cancelToken.token : null
             })
 
             setUserAuth({
@@ -72,7 +81,7 @@ function AuthContextProvider({children}) {
 
     function logIn(jwtToken) {
         localStorage.setItem("token", jwtToken);
-        getUserData();
+        getUserData(localStorage.getItem("token"));
     }
 
     function logOut() {
@@ -92,10 +101,6 @@ function AuthContextProvider({children}) {
         user: userAuth.user,
         loginFunction: logIn,
         logoutFunction: logOut,
-        myNumber: 6,
-        myString: "Tom",
-        myBool: false,
-        myList: [1, 3, 5, 7, 11, 13, 17, 19, 23, 29]
     }
 
     return (
